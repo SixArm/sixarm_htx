@@ -1,0 +1,260 @@
+#!/usr/bin/env ruby
+
+# HTX is an HTML processor for formatting our site's web pages.
+# HTX is an ad-hoc tool somewhat like Markdown, Textile, or XSLT.
+#
+# HTX is a work in progress and is not intended yet for public use;
+# it is based on our older HTX perl code from 1994-1998.
+#
+# http://sixarm.com
+
+
+require 'open4'
+require 'pp'
+require 'cgi'
+require 'fileutils'
+
+MYDIR = File.expand_path(File.dirname(__FILE__))+'/'
+
+
+# Require all the Ruby files in a given directory
+
+def require_dir(dir)
+  Dir.entries(dir).grep(/\.rb$/).map{|x| dir + x.sub(/\.rb$/,'')}.each{|req|
+    require req
+  }
+end
+
+
+# HTX adds some helper methods to some of the Ruby core classes.
+
+def init_lib
+  require_dir(MYDIR+"lib/")
+end
+
+
+# HTX provides theme capabilities, such as having custom tags.
+# For example, your website "my.com" can define its own tags.
+
+@@themes={}
+
+
+# Each theme must call init with these settings:
+#  - theme = the theme keyword
+#  - :docroot = the system root path to the html files
+#  - :webroot = the web root path to the html pages
+#  - :email = the email address of the administrator
+#
+# Example:
+#   init('foo',
+#     'docroot' => '/var/www/foo/html',
+#     'webroot' => 'http://foo.com',
+#     'email' => 'webmaster@foo.com'
+#   )
+
+def init_theme(theme,ops={})
+  @@themes[theme]=ops
+end
+
+
+# HTX has a file naming convention for transform files:
+#  - tag1: tag methods for single tags, e.g. to handle "<foo/>"
+#  - tag2: tag methods for double tags, e.g. to handle "<foo>...</foo>"
+#  - cook: methods that parse files in non-tag ways, e.g. akin to Textile
+#  - helpers: misc, utilities, etc.
+
+def init_themes
+  Dir.entries(MYDIR+"themes/").grep(/\w/).each{|theme| require_dir(MYDIR+"themes/"+theme+"/") }
+end
+
+
+# HTX configures itself based on the preset working directory:
+# we look at the current directory path to see if it contains 
+# a theme's name as a directory. If so, we use that theme.
+
+def init_pwd
+  pwd = Dir.pwd
+  @@themes.each_pair{|theme_key,theme|
+    if pwd.index("/#{theme_key}/")>=0 
+      puts "theme:#{theme_key}"
+      @theme = theme
+      @theme_key = theme_key
+      @docroot = theme['docroot']
+      @webroot = theme['webroot']
+      @email = theme['email']
+      puts "docroot:#{@docroot}"
+      puts "webroot:#{@webroot}"
+    end
+    return
+  }
+  raise "unknown theme for pwd:#{pwd}"
+end
+
+
+# HTX preloads some shared files into a shared cache for speed.
+#   - head.hti
+#   - foot.hti
+#   - etc.
+#
+# We access these files like this:
+#   - @hti[:head]
+#   - @hti[:foot]
+#   - etc.
+
+@hti={}
+
+def init_hti(*keys)
+  keys.each{|key|
+    file_name = @docroot + "/#{key}.hti"
+    @hti[key] = File.open(file_name).read || ""
+  }
+end
+
+
+# HTX has a concept of a "cook" that is smarter than just a tag,
+# and is typically suitable for parsing a simple DSL within a file,
+# or doing something different for a file based on the file path, etc.
+#
+# Each cook must define two methods:
+#  - cook_foo?(text) => returns true if the text should be processed
+#  - cook_foo(text) => processes the text
+
+@cooks=[]
+
+
+# Each theme can add its own cooks, as many as we want.
+# Each of these cooks will be called with the entire page text.
+
+def add_cook(method_name)
+  @cooks << method_name
+end
+
+
+# Call all the cooks
+
+def htx_cook(text)
+  @cooks.each{|method_name|
+    if send(method_name+'?',text)
+      text=send(method_name,text)
+    end
+  }
+  return text
+end
+
+
+# Return an array of htx input file names that we will process
+
+def htx_input_files
+  ((ARGV[0]=='*') ? Dir.entries('.') : ARGV).select{|x| x=~/\.ht$/ and x!=~/^\.\#/}
+end
+
+
+# Given a file name, return the corresponding href
+
+def htx_file_name_to_href(file_name)
+  File::expand_path(file_name).sub(@docroot,@webroot).sub(/\.ht$/,'.html').sub(/\/index.html$/,'/')
+end
+
+
+def htx_read_input(file_name)
+ puts 'HTX ' + file_name
+ file = File.new(file_name)
+ text = file.read
+ return file, text
+end
+
+
+def htx_write_output(file_name,text)
+ out = File.open(file_name + 'ml','w')
+ out.write(text)
+ out.close
+end
+
+
+# Do all the substitutions, such as replacing text variables
+
+def htx_substitutions(s)
+  #substitute_stars
+  s=htx_sub_var(s)
+  #['header','body','title'].each{|tag| s.combine_tag(tag)}
+  return s
+end
+
+
+# Replace variables e.g. "<=foo>" => @var['foo']
+
+def htx_sub_var(s)
+  s.gsub(/<=(\w+)\>/){ @var[$1] }
+end
+
+
+def htx(file_name)
+  file, text = htx_read_input(file_name)
+  @var = {
+    'file_path' => file.fullpath,
+    'file_name' => file_name,
+    'canonical' => htx_file_name_to_href(file_name)
+  }
+  text=htx_cook(text)
+  text=htx_process_entire_page(text)
+  text=htx_substitutions(text)
+  htx_write_output(file_name,text)
+end
+
+
+def htx_process_entire_page(s)
+  s or raise "content missing"
+  s = @hti['header']+s+@hti['footer']
+
+  s.gsub!(/\<(include|railapp-gems-and-plugins) *(.*?)\/>/){
+    tag=$1
+    attr=$2
+    case tag
+    when 'include' then
+      tag_include(attr) 
+    when 'railapp-gems-and-plugins' then
+      tag_railapp_gems_and_plugins
+    end
+  }
+ 
+  while result = s.gsub!(/\<(article|citelink|cmd|ed|javascript|lis|list|listy|man|mysql|ruby|sh|sh0|sh1|sh2|talk|skills|see|set|toclist|uri|wikipedia|wikipedias|x)>(.*?)<\/\1>/m){
+      tag=$1
+      text=$2
+      method="tag2_"+tag.gsub(/\W/,'_')
+      send(method,text)
+    }
+  end
+
+  while result = s.gsub!(/<(#{@theme_key}:[:\w]+)>(.*?)<\/\1>/m){
+      tag=$1
+      text=$2
+      puts "tag:#{tag}"
+      method=tag.gsub(/\W/,'_')
+      send(method,text)
+    }
+  end
+
+  return s
+end
+
+
+
+
+## MAIN
+
+def main
+  return if !ARGV or ARGV.size<1
+  init_lib
+  init_themes
+  init_pwd
+  init_hti("header","footer","disqus")
+  htx_input_files.each{|x| htx(x) }
+end
+
+main
+
+__END__
+
+
+
+

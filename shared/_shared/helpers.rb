@@ -46,8 +46,6 @@ def stream_num_to_html_tag_pair(stream_num=nil)
     else
       ["",""]
     end
-end
-
 
 #def pygmentize(s, lexer_name)
 # f = IO.popen("pygmentize -f html -l " + lexer, 'w+')
@@ -56,4 +54,18 @@ end
 # return f.read
 #end
 
+  def page_subtitle=(subtitle)
+    @var['subtitle']=subtitle
+  end
+
+  def page_description=(s)
+    @var['description']=s.gsub(/<.*?>/,'')[0..128]+'...'
+    @var['keywords'] || (page_keywords=s)
+  end
+
+  def page_keywords=(s)
+    @var['keywords']=s.to_keywords[0..128]
+  end
+
+end
 

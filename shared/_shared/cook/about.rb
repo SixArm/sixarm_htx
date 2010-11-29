@@ -1,6 +1,12 @@
 #!/usr/bin/env ruby
 
-def cook_blog(raw)
+add_cook('cook_about')
+
+def cook_about?(raw)
+  @var['file_path']=~/\/html\/about$/
+end
+
+def cook_about(raw)
  (title,keywords,description,related)=raw.split(/\n=\n/)
  subject = CGI::escape(title)
  cooked = "<h1>#{title}</h1>\n\n#{description}\n\n"
@@ -22,9 +28,8 @@ def cook_blog(raw)
 
  cooked << @disqus
 
- @var['subtitle']=title
- @var['description']=description.gsub(/<.*?>/,'')[0..128]+'...'
- @var['keywords']=description[0..255].to_keywords[0..128]
+ page_subtitle=title
+ page_description=description
 
  return cooked
 end
