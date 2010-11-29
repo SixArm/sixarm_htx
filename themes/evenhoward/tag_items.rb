@@ -30,6 +30,7 @@ class Item
   end
 
   def paypal_hosted_button
+    if !paypal_hosted_button_id then return "" end
     "<form action=\"https://www.paypal.com/cgi-bin/webscr\" method=\"post\">\n" \
     + "<input type=\"hidden\" name=\"cmd\" value=\"_s-xclick\">\n" \
     + "<input type=\"hidden\" name=\"hosted_button_id\" value=\"#{paypal_hosted_button_id}\">\n" \
@@ -65,7 +66,7 @@ def evenhoward_gallery_item(text)
   item.price=price
   item.etsy_item_slug=etsy_item_slug
   item.etsy_item_img_id=etsy_item_img_id
-  item.paypal_hosted_button_id=paypal_hosted_button_id
+  item.paypal_hosted_button_id=(paypal_hosted_button_id=='?' ? nil : paypal_hosted_button_id)
   return item
 end
 
