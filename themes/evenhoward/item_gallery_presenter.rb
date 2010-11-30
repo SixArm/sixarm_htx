@@ -24,17 +24,27 @@ class Item
 
 
   def gallery_item_img
-  "<img class=\"gallery_item_img\" width=\"170\" height=\"135\" src=\"http://ny-image0.etsy.com/il_170x135.#{etsy_item_img_1_id}.jpg\"/>"
+    image = etsy_item.images.first
+    "<img class=\"gallery_item_img\" width=\"#{image.small_width}\" height=\"#{image.small_height}\" src=\"#{image.small_url}\"/>"
+  end
+
+
+  def gallery_item_link_title
+    "#{title} - #{category} - #{tags}"
+  end
+
+
+  def gallery_item_buy
+    paypal_item.hosted_button_form || paypal_item.hosted_button_form_blank
   end
 
 
   def gallery_item_link
-    "<a href=\"http://www.etsy.com/listing/#{etsy_item_slug}\" title=\"#{title} - even howard crochet - #{tooltip}\">" \
+    "<a href=\"#{etsy_item.url}\" title=\"#{gallery_item_link_title}\">" \
     + gallery_item_img + "<br/>\n" \
     + gallery_item_title + "<br/>\n" \
     + gallery_item_price + "</a><br/>\n" \
-    + PayPalHostedButton.new(paypal_hosted_button).to_html + "\n" 
+    + gallery_item_buy + "\n" 
   end
-
 
 end

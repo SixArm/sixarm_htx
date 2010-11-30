@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 
-def tag_include(filename)
- puts filename
+def tag1_include(filename)
  File.open(filename).read
 end

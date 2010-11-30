@@ -17,12 +17,14 @@ require 'fileutils'
 MYDIR = File.expand_path(File.dirname(__FILE__))+'/'
 
 
-# Require all the Ruby files in a given directory
+# Initialize
 
-def require_dir(dir)
-  Dir.entries(dir).grep(/\.rb$/).map{|x| dir + x.sub(/\.rb$/,'')}.each{|req|
-    require req
-  }
+def init
+  init_lib
+  init_shared
+  init_themes
+  init_pwd
+  init_hti("header","footer","disqus")
 end
 
 
@@ -30,6 +32,13 @@ end
 
 def init_lib
   require_dir(MYDIR+"lib/")
+end
+
+
+# HTX has a bunch of shared transforms (e.g. tags, cooks)
+
+def init_shared
+  require_dir(MYDIR+"shared/")
 end
 
 
@@ -76,14 +85,11 @@ def init_pwd
   pwd = Dir.pwd
   @@themes.each_pair{|theme_key,theme|
     if pwd.index("/#{theme_key}/")>=0 
-      puts "theme:#{theme_key}"
       @theme = theme
       @theme_key = theme_key
       @docroot = theme['docroot']
       @webroot = theme['webroot']
       @email = theme['email']
-      puts "docroot:#{@docroot}"
-      puts "webroot:#{@webroot}"
     end
     return
   }
@@ -196,41 +202,31 @@ def htx(file_name)
     'canonical' => htx_file_name_to_href(file_name)
   }
   text=htx_cook(text)
+  text=htx_add_header_and_footer(text)
   text=htx_process_entire_page(text)
+  text=htx_process_xml_pairs(text)
   text=htx_substitutions(text)
   htx_write_output(file_name,text)
 end
 
 
+def htx_add_header_and_footer(s)
+  @hti['header']+s+@hti['footer']
+end
+
+
 def htx_process_entire_page(s)
-  s or raise "content missing"
-  s = @hti['header']+s+@hti['footer']
 
   s.gsub!(/\<(include|railapp-gems-and-plugins) *(.*?)\/>/){
     tag=$1
     attr=$2
-    case tag
-    when 'include' then
-      tag_include(attr) 
-    when 'railapp-gems-and-plugins' then
-      tag_railapp_gems_and_plugins
-    end
+    send_tag_text("tag1_"+tag,attr)
   }
  
   while result = s.gsub!(/\<(article|citelink|cmd|ed|javascript|lis|list|listy|man|mysql|ruby|sh|sh0|sh1|sh2|talk|skills|see|set|toclist|uri|wikipedia|wikipedias|x)>(.*?)<\/\1>/m){
       tag=$1
       text=$2
-      method="tag2_"+tag.gsub(/\W/,'_')
-      send(method,text)
-    }
-  end
-
-  while result = s.gsub!(/<(#{@theme_key}:[:\w]+)>(.*?)<\/\1>/m){
-      tag=$1
-      text=$2
-      puts "tag:#{tag}"
-      method=tag.gsub(/\W/,'_')
-      send(method,text)
+      send_tag_text("tag2_",text)
     }
   end
 
@@ -238,16 +234,47 @@ def htx_process_entire_page(s)
 end
 
 
+def htx_process_xml_pairs(s)
+  while result = s.gsub!(/<(#{@theme_key}:[:\w]+)>(.*?)<\/\1>/m){
+      tag=$1
+      text=$2
+      send_tag_text(tag,text)
+    }
+  end
+  return s
+end
 
 
-## MAIN
+
+###
+# 
+# HELPERS
+#
+###
+
+
+# Require all the Ruby files in a given directory
+
+def require_dir(dir)
+  Dir.entries(dir).grep(/\.rb$/).map{|x| dir + x.sub(/\.rb$/,'')}.each{|req|
+    require req
+  }
+end
+
+def send_tag_text(tag,text)
+  send(tag_to_method_name(tag),text)
+end
+
+def tag_to_method_name(tag)
+  tag.gsub(/\W/,'_')
+end
+  
+
+### MAIN
 
 def main
   return if !ARGV or ARGV.size<1
-  init_lib
-  init_themes
-  init_pwd
-  init_hti("header","footer","disqus")
+  init
   htx_input_files.each{|x| htx(x) }
 end
 

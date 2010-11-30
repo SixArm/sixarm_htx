@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-def tag_railapp_gems_and_plugins
+def tag1_railapp_gems_and_plugins
 
   out=[]      # pretty output for the web page, which lists all the gems and plugins with notes
   install=[]  # install script to run on the unix command line, which installs gems and plugins

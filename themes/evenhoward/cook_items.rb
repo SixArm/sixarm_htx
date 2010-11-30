@@ -7,7 +7,7 @@ def cook_item_page?(raw)
 end
 
 def cook_item_page(raw)
-  (title,subtitle,pic_ids,description)=raw.split(/\n\s*\n/)
+  (title,subtitle,pic_ids,description)=raw.split(/\s*\n###+\s*\n\s*/m)
   pic_ids = pic_ids.split(/\s*\n\s*/)
   description = description.gsub(/\n/,"<br/>")
   return item_title(title) + "\n\n" + item_subtitle(subtitle) + "\n\n" + item_pics(pic_ids) + "\n\n" + description + "\n\n"
