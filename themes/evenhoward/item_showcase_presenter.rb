@@ -59,13 +59,15 @@ class Item
 
 
   def showcase_item_page_text
-    showcase_item_title \
+    "<div class=\"showcase_headlines\">\n" \
+    + showcase_item_title \
     + showcase_item_category \
     + showcase_item_tags \
+    + "</div>\n" \
     + showcase_item_buy \
     + showcase_item_pics \
     + showcase_item_description \
-    + showcase_item_etsy 
+    + showcase_item_etsy
   end
 
 
