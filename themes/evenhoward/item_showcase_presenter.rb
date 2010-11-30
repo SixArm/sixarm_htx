@@ -59,15 +59,17 @@ class Item
 
 
   def showcase_item_page_text
-    "<div class=\"showcase_headlines\">\n" \
+    "" \
+    + showcase_item_pics \
+    + "<div class=\"showcase_headlines\">\n" \
     + showcase_item_title \
     + showcase_item_category \
     + showcase_item_tags \
     + "</div>\n" \
     + showcase_item_buy \
-    + showcase_item_pics \
     + showcase_item_description \
-    + showcase_item_etsy
+    + showcase_item_etsy \
+    + ""
   end
 
 
@@ -106,7 +108,7 @@ end
 class EtsyItemImage
 
   def showcase
-    "<td><a href=\"#{large_url}\" title=\"zoom image\">" + small_img + "<br/>zoom</a></td>\n" 
+    "<td><a href=\"#{large_url}\" title=\"zoom image\"><img width=\"238\" height=\"189\" src=\"#{small_url}\"><br/>zoom</a></td>\n" 
   end
 
 end

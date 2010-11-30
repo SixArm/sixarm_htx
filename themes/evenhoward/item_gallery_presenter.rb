@@ -29,17 +29,12 @@ class Item
   end
 
 
-  def gallery_item_buy
-    paypal_item.hosted_button_form || paypal_item.hosted_button_form_blank
-  end
-
-
   def gallery_item_link
     "<a href=\"#{url}\" title=\"#{link_title}\">" \
     + gallery_item_img + "<br/>\n" \
     + gallery_item_title + "<br/>\n" \
-    + gallery_item_price + "</a><br/>\n" \
-    + gallery_item_buy + "\n" 
+    + gallery_item_price + "</a><br/>\n" 
   end
+
 
 end
