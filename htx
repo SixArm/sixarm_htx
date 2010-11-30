@@ -120,7 +120,6 @@ class Htx
         @docroot = @themeset['docroot']
         @webroot = @themeset['webroot']
         @email = @themeset['email']
-        puts "theme:#{theme}"
       end
       return
     }
@@ -319,7 +318,6 @@ class Htx
   end
 
   def send_tag_text(tag,text)
-    puts "send_tag_text #{tag} ..."
     send(tag_to_method_name(tag),text)
   end
 

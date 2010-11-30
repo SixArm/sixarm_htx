@@ -76,6 +76,15 @@ class Item
   end
 
 
+  def url
+    "/items/#{id}.html"
+  end
+
+  def link_title
+    "#{title} - #{category} - #{tags}"
+  end
+
+
 end
 
 

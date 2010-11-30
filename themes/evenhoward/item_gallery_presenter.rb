@@ -14,12 +14,12 @@ class Item
 
 
   def gallery_item_title
-    "<span class=\"gallery_item_title\">#{title}</div>"
+    "<span class=\"gallery_item_title\">#{title}</span>"
   end
 
 
   def gallery_item_price
-  "<span class=\"gallery_item_price\">$#{price}</div>"
+  "<span class=\"gallery_item_price\">$#{price}</span>"
   end
 
 
@@ -29,18 +29,13 @@ class Item
   end
 
 
-  def gallery_item_link_title
-    "#{title} - #{category} - #{tags}"
-  end
-
-
   def gallery_item_buy
     paypal_item.hosted_button_form || paypal_item.hosted_button_form_blank
   end
 
 
   def gallery_item_link
-    "<a href=\"#{etsy_item.url}\" title=\"#{gallery_item_link_title}\">" \
+    "<a href=\"#{url}\" title=\"#{link_title}\">" \
     + gallery_item_img + "<br/>\n" \
     + gallery_item_title + "<br/>\n" \
     + gallery_item_price + "</a><br/>\n" \

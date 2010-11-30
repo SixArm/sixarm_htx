@@ -37,7 +37,7 @@ class EtsyItemImage
   end
 
   def medium_url
-    "http://ny-image0.etsy.com/il_560xN.#{xid}.jpg"
+    "http://ny-image0.etsy.com/il_560xn.#{xid}.jpg"
   end
 
   def medium_width
@@ -53,7 +53,7 @@ class EtsyItemImage
   end
   
   def large_url
-    "http://ny-image0.etsy.com/il_FullxFull.#{xid}.jpg"
+    "http://ny-image0.etsy.com/il_fullxfull.#{xid}.jpg"
   end
 
   def large_width

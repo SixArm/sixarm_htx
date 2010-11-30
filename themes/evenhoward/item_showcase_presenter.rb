@@ -25,9 +25,19 @@ class Item
     "<h3>#{tags}</h3>"
   end
 
+  def showcase_item_buy
+    paypal_item.hosted_button_form || paypal_item.hosted_button_form_blank
+  end
+
+  def showcase_item_etsy
+    "<h3><a href=\"#{etsy_item.url}\" title=\"#{link_title}\">view on etsy</a></h3>"
+  end
+
   def showcase_item_description
     "<p>\n\n" + description.gsub(/\n/,"<br/>") + "\n\n</p>\n\n"
   end
+
+
 
 
   #def showcase_item_img(id)
@@ -52,8 +62,10 @@ class Item
     showcase_item_title \
     + showcase_item_category \
     + showcase_item_tags \
+    + showcase_item_buy \
     + showcase_item_pics \
-    + showcase_item_description
+    + showcase_item_description \
+    + showcase_item_etsy 
   end
 
 
@@ -92,7 +104,7 @@ end
 class EtsyItemImage
 
   def showcase
-    "<td><a href=\"#{large_url}\" title=\"zoom image\">" + small_img + "</a></td>\n" 
+    "<td><a href=\"#{large_url}\" title=\"zoom image\">" + small_img + "<br/>zoom</a></td>\n" 
   end
 
 end
