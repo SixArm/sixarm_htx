@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
-add_cook('cook_about')
+$htx.add_cook('cook_about')
 
 def cook_about?(raw)
-  @var['file_path']=~/\/html\/about$/
+  $htx.var['file_path']=~/\/html\/about$/
 end
 
 def cook_about(raw)
@@ -26,7 +26,7 @@ def cook_about(raw)
 
  cooked <<  "</ul>"
 
- cooked << @disqus
+ cooked << $htx.hti['disqus']
 
  page_subtitle=title
  page_description=description

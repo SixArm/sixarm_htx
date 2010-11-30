@@ -19,7 +19,7 @@ class Item
 
 
   def gallery_item_price
-  "<span class=\"gallery_item_price\">#{price}</div>"
+  "<span class=\"gallery_item_price\">$#{price}</div>"
   end
 
 

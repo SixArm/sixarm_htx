@@ -3,14 +3,16 @@
 EVENHOWARD_GALLERY_COLUMN_COUNT=4
 
 def evenhoward_gallery(text)
-  items=evenhoward_gallery_text_to_items(text)
+puts "evenhoward_gallery"
+  items=evenhoward_gallery_tsv_to_items(text.sub(/^\s+/m,'').sub(/\s+/m,''))
+  items.each{|item| item.showcase_item_page_output }
   return evenhoward_gallery_table_of_items(items)
 end
 
-def evenhoward_gallery_text_to_items(text)
-  text.sub!(/\A[\s\n]+/,'')
-  text.sub!(/[\s\n]+\Z/,'')
-  items=text.split(/\s*\n###+\s*\n\s*/m).map{|subtext| Item.new_via_text(subtext) }
+def evenhoward_gallery_tsv_to_items(tsv)
+  rows=tsv.split(/\n/)
+  rows.slice!(0,1)
+  rows.map{|row| Item.new_via_fields(*row.split(/\t/)) }
 end
 
 def evenhoward_gallery_table_of_items(items,column_count=EVENHOWARD_GALLERY_COLUMN_COUNT)
@@ -26,10 +28,8 @@ def evenhoward_gallery_table_of_items(items,column_count=EVENHOWARD_GALLERY_COLU
   return out.join("\n")
 end
 
-def evenhoward_gallery_tsv(text)
-  items=evenhoward_gallery_text_to_items(text)
-  puts items.map{|item| item.fields.flatten.join("\t")}.join("\n")
-end
+
+
 
 
   

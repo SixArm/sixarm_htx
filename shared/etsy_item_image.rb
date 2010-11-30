@@ -16,6 +16,10 @@ class EtsyItemImage
 
   ## Presenters
 
+  def small_img
+    "<img width=\"#{small_width}\" height=\"#{small_height}\" src=\"#{small_url}\"/>"
+  end
+
   def small_url
     "http://ny-image0.etsy.com/il_170x135.#{xid}.jpg"
   end
@@ -28,6 +32,10 @@ class EtsyItemImage
     135
   end
 
+  def medium_img
+    "<img width=\"#{medium_width}\" src=\"#{large_url}\"/>"
+  end
+
   def medium_url
     "http://ny-image0.etsy.com/il_560xN.#{xid}.jpg"
   end
@@ -38,6 +46,10 @@ class EtsyItemImage
 
   def medium_height
     raise "unknown"
+  end
+
+  def large_img
+    "<img src=\"#{large_url}\"/>"
   end
   
   def large_url

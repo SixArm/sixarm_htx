@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-add_cook('cook_blog')
+$htx.add_cook('cook_blog')
 
 def cook_blog?(raw)
   @var['file_path']=~/\/html\/blog$/
