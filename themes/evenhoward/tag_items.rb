@@ -21,7 +21,7 @@ def evenhoward_gallery_table_of_items(items,column_count=EVENHOWARD_GALLERY_COLU
   while items.size >= column_count
     sliced = items.slice!(0,column_count)
     out << "<tr>\n"
-    out << sliced.map{|item| "<td>" + item.gallery_item_link + "</td>\n" }
+    out << sliced.map{|item| "<td>" + item.gallery_item + "</td>\n" }
     out << "</tr>\n"
   end
   out << "</table>"

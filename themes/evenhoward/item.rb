@@ -3,7 +3,7 @@ require 'pp'
 
 class Item
 
-  attr_accessor :title
+  attr_accessor :name
   attr_accessor :tags
   attr_accessor :category
   attr_accessor :description
@@ -12,7 +12,7 @@ class Item
   attr_accessor :paypal_item
 
   def initialize(ops={})
-    @title=ops[:title]
+    @name=ops[:name]
     @tags=ops[:tags]
     @category=ops[:category]
     @description=ops[:description]
@@ -22,7 +22,7 @@ class Item
   end
 
   def self.new_via_fields(
-     title,
+     name,
      tags,
      category,
      description,
@@ -37,7 +37,7 @@ class Item
      paypal_item_description
    )
     item = Item.new(
-     :title => title,
+     :name => name,
      :tags => tags,
      :category => category,
      :price => price,
@@ -65,7 +65,7 @@ class Item
 
   def fields
     [
-     title,   
+     name,   
      tags,
      category,
      description,
@@ -81,7 +81,7 @@ class Item
   end
 
   def link_title
-    "#{title} - #{category} - #{tags}"
+    "#{name} - #{category} - #{tags}"
   end
 
 

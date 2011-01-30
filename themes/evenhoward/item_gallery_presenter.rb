@@ -13,28 +13,29 @@
 class Item
 
 
-  def gallery_item_title
-    "<span class=\"gallery_item_title\">#{title}</span>"
+  def gallery_item
+    HTML.div(:class => "gallery_item", :content => (gallery_item_div_image + gallery_item_div_name + gallery_item_div_price))
   end
 
-
-  def gallery_item_price
-  "<span class=\"gallery_item_price\">$#{price}</span>"
+  def gallery_item_div_image
+    HTML.div(:class => "image", :content => gallery_item_link(:content => gallery_item_img))
   end
 
+  def gallery_item_div_name
+    HTML.div(:class => "name", :content => gallery_item_link(:content => HTML.span(:class => "name", :content => name)))
+  end
+
+  def gallery_item_div_price
+    HTML.div(:class => "price", :content => gallery_item_link(:content => HTML.span(:class => "price", :content => "$#{price}")))
+  end
 
   def gallery_item_img
     image = etsy_item.images.first
-    "<img class=\"gallery_item_img\" width=\"#{image.small_width}\" height=\"#{image.small_height}\" src=\"#{image.small_url}\"/>"
+    "<img width=\"#{image.small_width}\" height=\"#{image.small_height}\" src=\"#{image.small_url}\"/>"
   end
 
-
-  def gallery_item_link
-    "<a href=\"#{url}\" title=\"#{link_title}\">" \
-    + gallery_item_img + "<br/>\n" \
-    + gallery_item_title + "<br/>\n" \
-    + gallery_item_price + "</a><br/>\n" 
+  def gallery_item_link(ops)
+    HTML.a(:href => url, :title => link_title, :content => ops[:content])
   end
-
 
 end

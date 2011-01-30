@@ -13,6 +13,8 @@ require 'open4'
 require 'pp'
 require 'cgi'
 require 'fileutils'
+require 'pathname'
+require 'rexml/document'
 
 
 class Htx
@@ -113,17 +115,24 @@ class Htx
   def init_pwd
     puts "init_pwd"
     pwd = Dir.pwd
-    @themesets.each_pair{|themesets_key,themesets_val|
-      if pwd.index("/#{themesets_key}/")>=0 
-        @theme = themesets_key
-        @themeset = themesets_val
-        @docroot = @themeset['docroot']
-        @webroot = @themeset['webroot']
-        @email = @themeset['email']
-      end
-      return
-    }
-    raise "unknown theme for pwd:#{pwd}"
+    # Default settings
+    @theme=@themeset=nil
+    @docroot=pwd
+    @webroot=''
+    # Customizations if a matching theme exists
+    if @themesets
+      @themesets.each_pair{|themesets_key,themesets_val|
+        if pwd.include?("/#{themesets_key}/")
+          @theme = themesets_key
+          @themeset = themesets_val
+          @docroot = @themeset['docroot']
+          @webroot = @themeset['webroot']
+          @email = @themeset['email']
+        end
+        return
+      }
+      raise "unknown theme for pwd:#{pwd}"
+    end
   end
 
 
@@ -139,10 +148,12 @@ class Htx
 
   def init_hti(*keys)
     @hti||={}
-    keys.each{|key|
-      file_name = @docroot + "/#{key}.hti"
-      @hti[key] = File.open(file_name).read || ""
-    }
+    if @docroot
+      keys.each{|key|
+        path = Pathname.new(@docroot + "/#{key}.hti")
+        @hti[key] = path.exist? ? File.open(path).read : ''
+      }
+    end
   end
 
 
@@ -173,6 +184,7 @@ class Htx
     s=transform_entire_page(s)
     s=transform_xml_pairs(s)
     s=transform_substitute(s)
+    s=transform_xml(s)
   end
 
 
@@ -228,7 +240,7 @@ class Htx
     while result = s.gsub!(/<(#{@theme}:[:\w]+)>(.*?)<\/\1>/m){
         tag=$1
         text=$2
-      send_tag_text(tag,text)
+        send_tag_text(tag,text)
       }
     end
     return s
@@ -239,6 +251,21 @@ class Htx
 
   def transform_substitute_var(s)
     s.gsub(/<=(\w+)\>/){ @var[$1] }
+  end
+
+
+  # Replace XML tags in a valid XML string
+  def transform_xml(s)
+    puts "transform_xml"
+    doc = REXML::Document.new(s)
+    ['github_repo_lister','sixarm_repo_lister'].each{|tag|
+      doc.elements.each("//#{tag}"){|e|
+        send("tag_" + tag_to_method_name(tag), e).each{|result| e << result}
+      }
+    }
+    s = ""
+    doc.write s
+    return s
   end
 
 
@@ -324,8 +351,46 @@ class Htx
   def tag_to_method_name(tag)
     tag.gsub(/\W/,'_')
   end
-  
+
 end
+
+
+class HTML
+
+  # Return an HTML anchor, e.g. '<a href="foo" title="goo">hoo</a>"
+  #
+  # Options:
+  #   :class => div class
+  #   :content => what the div surrounds
+
+  def self.a(ops={})
+    "<a href=\"#{ops[:href]}\" title=\"#{ops[:title]}\">#{ops[:content]}</a>" 
+  end
+
+
+  # Return an HTML div, e.g. '<div class="foo">goo</div>"
+  #
+  # Options:
+  #   :class => div class
+  #   :content => what the div surrounds
+
+  def self.div(ops={})
+    return "<div class=\"#{ops[:class]}\">#{ops[:content]}</div>\n"
+  end
+
+
+  # Return an HTML span, e.g. '<span class="foo">goo</span>"
+  #
+  # Options:
+  #   :class => div class
+  #   :content => what the div surrounds
+
+  def self.span(ops={})
+    return "<span class=\"#{ops[:class]}\">#{ops[:content]}</span>"
+  end
+
+end
+
 
 
 ### MAIN

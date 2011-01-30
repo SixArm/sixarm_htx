@@ -1,4 +1,5 @@
-#!/usr/bin/env ruby                                                                                                                                                                                                                          
+#!/usr/bin/env ruby                                                                                                                                                                                                                         
+
 class EtsyItemImage
 
   attr_accessor :xid
@@ -16,12 +17,16 @@ class EtsyItemImage
 
   ## Presenters
 
+  def host_name
+    'ny-image0.etsy.com'
+  end
+
   def small_img
     "<img width=\"#{small_width}\" height=\"#{small_height}\" src=\"#{small_url}\"/>"
   end
 
   def small_url
-    "http://ny-image0.etsy.com/il_170x135.#{xid}.jpg"
+    "http://#{host_name}/il_170x135.#{xid}.jpg"
   end
 
   def small_width
@@ -37,7 +42,7 @@ class EtsyItemImage
   end
 
   def medium_url
-    "http://ny-image0.etsy.com/il_560xn.#{xid}.jpg"
+    "http://#{host_name}/il_560xn.#{xid}.jpg"
   end
 
   def medium_width
@@ -53,7 +58,7 @@ class EtsyItemImage
   end
   
   def large_url
-    "http://ny-image0.etsy.com/il_fullxfull.#{xid}.jpg"
+    "http://#{host_name}/il_fullxfull.#{xid}.jpg"
   end
 
   def large_width

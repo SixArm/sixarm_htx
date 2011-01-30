@@ -13,8 +13,8 @@
 class Item
 
 
-  def showcase_item_title
-    "<h1>#{title}</h1>"
+  def showcase_item_name
+    "<h1>#{name}</h1>"
   end
 
   def showcase_item_category
@@ -62,7 +62,7 @@ class Item
     "" \
     + showcase_item_pics \
     + "<div class=\"showcase_headlines\">\n" \
-    + showcase_item_title \
+    + showcase_item_name \
     + showcase_item_category \
     + showcase_item_tags \
     + "</div>\n" \
