@@ -114,15 +114,23 @@ class Htx
   
   def init_pwd
     puts "init_pwd"
-    pwd = Dir.pwd
-    # Default settings
-    @theme=@themeset=nil
-    @docroot=pwd
+    init_pwd_defaults
+    init_pwd_themes
+  end
+
+  def init_pwd_defaults
+    @pwd=Dir.pwd
+    @theme=nil
+    @themeset=nil
+    @docroot=@pwd
     @webroot=''
-    # Customizations if a matching theme exists
+    @mail=''
+  end
+
+  def init_pwd_themes
     if @themesets
       @themesets.each_pair{|themesets_key,themesets_val|
-        if pwd.include?("/#{themesets_key}/")
+        if @pwd.include?(themesets_key)
           @theme = themesets_key
           @themeset = themesets_val
           @docroot = @themeset['docroot']
@@ -228,7 +236,7 @@ class Htx
     while result = s.gsub!(/\<(article|citelink|cmd|ed|javascript|lis|list|listy|man|mysql|ruby|sh|sh0|sh1|sh2|talk|skills|see|set|toclist|uri|wikipedia|wikipedias|x)>(.*?)<\/\1>/m){
         tag=$1
         text=$2
-        send_tag_text("tag2_",text)
+        send_tag_text("tag2_"+tag,text)
       }
     end
     
@@ -256,7 +264,6 @@ class Htx
 
   # Replace XML tags in a valid XML string
   def transform_xml(s)
-    puts "transform_xml"
     doc = REXML::Document.new(s)
     ['cmd','sixarm_repo_lister_title','sixarm_repo_lister_items'].each{|tag|
       doc.elements.each("//#{tag}"){|e|
@@ -277,7 +284,7 @@ class Htx
 
 
   def read_input(file_path)
-    puts 'HTX' + file_path
+    puts 'HTX ' + file_path
     file = File.new(file_path)
     text = file.read
     return file, text
@@ -345,6 +352,7 @@ class Htx
   end
 
   def send_tag_text(tag,text)
+    pp "send_tag_text tag:#{tag}"
     send(tag_to_method_name(tag),text)
   end
 
