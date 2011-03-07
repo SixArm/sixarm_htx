@@ -1,5 +1,6 @@
-#!/usr/bin/env ruby
-
+# -*- coding: utf-8 -*-
+=begin rdoc
+=end
 
 def expand_stars(stars)
  return "<img width=60 height=12 src=\"/img/icons/starry/#{stars.strip.size}.gif\" alt=\"#{stars}\">"

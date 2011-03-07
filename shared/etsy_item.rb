@@ -1,4 +1,7 @@
-#!/usr/bin/env ruby                                                                                                                                                                                                                          
+# -*- coding: utf-8 -*-
+=begin rdoc
+=end
+
 class EtsyItem
 
   attr_accessor :xid

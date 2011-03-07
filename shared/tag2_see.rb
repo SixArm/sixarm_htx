@@ -1,4 +1,6 @@
-#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+=begin rdoc
+=end
 
 def tag2_see(s)
   link = (s =~/^\w+:\/\//) ? s.to_href_link : s.to_wiki_link

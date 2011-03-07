@@ -1,4 +1,6 @@
-#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+=begin rdoc
+=end
 
 def tag2_skill(title)
  # e.g. title='Ruby On Rails', alt='Ruby', img='ruby-on-rails', href='ruby-on-rails'

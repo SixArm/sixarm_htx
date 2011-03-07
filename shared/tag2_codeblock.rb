@@ -1,4 +1,6 @@
-#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+=begin rdoc
+=end
 
 def codeblock_helper(code, lang, pygments=nil)
   code.sub!(/^\s*\n/,'')

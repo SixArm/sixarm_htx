@@ -1,4 +1,6 @@
-#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+=begin rdoc
+=end
 
 def tag2_article_easy(s)
   if (s=~/\s*\n\s+\n\s*/)

@@ -1,4 +1,6 @@
-#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+=begin rdoc
+=end
 
 def tag2_set(text)
  text.striplines.each{|line|

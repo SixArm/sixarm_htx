@@ -1,4 +1,7 @@
-#!/usr/bin/env ruby                                                                                                                                                                                                                          
+# -*- coding: utf-8 -*-
+=begin rdoc
+=end
+
 class PayPalItem
 
   attr_accessor :hosted_button_xid

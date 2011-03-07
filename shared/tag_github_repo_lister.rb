@@ -32,7 +32,7 @@ end
 def tag_sixarm_repo_lister_title(e)
   headline = e.text
   e.text = ''
-  return Element.newer_tr(:children => [Element.newer_td(:attributes => {'colspan' => 2}, :children => [Element.newer(:name => 'h2', :text => headline)])])
+  return Element.newer_tr(:children => [Element.newer_td(:attributes => {'colspan' => 2}, :children => [Element.newer(:name => 'h3', :text => headline)])])
 end
 
 
