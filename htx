@@ -8,7 +8,6 @@
 #
 # http://sixarm.com
 
-
 require 'open4'
 require 'pp'
 require 'cgi'
@@ -265,13 +264,13 @@ class Htx
   # Replace XML tags in a valid XML string
   def transform_xml(s)
     doc = REXML::Document.new(s, {:raw=> ['script']})
-    ['cmd','sixarm_favicons','sixarm_repo_lister_title','sixarm_repo_lister_items'].each{|tag|
-      doc.elements.each("//#{tag}"){|e|
-        send("tag_" + tag_to_method_name(tag), e).each{|result| e << result}
-      }
-    }
-    s = ""
-    doc.write s
+#    ['cmd','sixarm_favicons','sixarm_repo_lister_title','sixarm_repo_lister_items'].each{|tag|
+#      doc.elements.each("//#{tag}"){|e|
+#        send("tag_" + tag_to_method_name(tag), e).each{|result| e << result}
+#      }
+#    }
+#    s = ""
+#    doc.write s
     return s
   end
 
