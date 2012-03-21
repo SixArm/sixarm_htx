@@ -7,5 +7,5 @@
 def tag_email(e)
   user, host = e.text.split(/\@/)
   e.text = ''
-  return Text.new(user), Element.newer(:name => 'span', :attributes => "display:none", :text => '*'), Text.new(host)
+  return Text.new(user), Element.new_with_options(:name => 'span', :attributes => "display:none", :text => '*'), Text.new(host)
 end

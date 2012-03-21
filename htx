@@ -14,16 +14,16 @@ require 'cgi'
 require 'fileutils'
 require 'pathname'
 require 'rexml/document'
-
+require 'sixarm_ruby_rexml_element_new_with_options'
 
 class Htx
 
-  attr_reader :docroot
-  attr_reader :webroot
-  attr_reader :email
-  attr_reader :theme
-  attr_accessor :hti
-  attr_accessor :var
+  attr_reader :docroot  # document root path, e.g. /var/www/sixarm.com/html
+  attr_reader :webroot  # web root url, e.g. http://sixarm.com
+  attr_reader :email  # default email address, e.g. sixarm@sixarm.com
+  attr_reader :theme  # theme keyword, e.g. sixarm
+  attr_accessor :hti  # ?
+  attr_accessor :var  # ? 
 
   ###
   #
@@ -144,8 +144,8 @@ class Htx
 
 
   # HTX preloads some shared files into a shared cache for speed.
-  #   - head.hti
-  #   - foot.hti
+  #   - header.hti
+  #   - footer.hti
   #   - etc.
   #
   # We access these files like this:

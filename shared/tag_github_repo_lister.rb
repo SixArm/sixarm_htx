@@ -23,7 +23,7 @@ def find_repo_summary_list(find_glob, skip_grep, trim_text)
   paths.map{|path|
     repo = path.parent.basename.to_s
     summary = `head -1 #{path}`.chomp
-    summary = summary.sub(/^[ =!]*/,'').sub(/#{trim_text}/,'') # strip leading markdown, textile, etc.
+    summary = summary.sub(/^[ =!#]*/,'').sub(/#{trim_text}/,'') # strip leading markdown, textile, etc.
     [repo,summary]
   }
 end
@@ -32,7 +32,7 @@ end
 def tag_sixarm_repo_lister_title(e)
   headline = e.text
   e.text = ''
-  return Element.newer_tr(:children => [Element.newer_td(:attributes => {'colspan' => 2}, :children => [Element.newer(:name => 'h3', :text => headline)])])
+  return Element.new_with_options_tr(:children => [Element.new_with_options_td(:attributes => {'colspan' => 2}, :children => [Element.new_with_options(:name => 'h3', :text => headline)])])
 end
 
 
@@ -62,9 +62,9 @@ end
 
 
 def repo_lister_tr(href_base,repo,summary)  
-  link = Element.newer(:name => "a", :attributes => {'href' => href_base + repo}, :text => repo)
+  link = Element.new_with_options(:name => "a", :attributes => {'href' => href_base + repo}, :text => repo)
   summary.gsub!(/»/,'')
-  return Element.newer_tr(:cells => [link, Text.new(summary)])
+  return Element.new_with_options_tr(:cells => [link, Text.new(summary)])
 end
 
 

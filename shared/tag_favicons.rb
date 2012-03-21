@@ -18,14 +18,14 @@ def tag_sixarm_favicons(e)
   skip_grep = e.attributes["skip"]
   return find(find_glob, skip_grep).map{|path|
     name = path.to_s.sub(/\.png$/,'')
-    img = Element.newer(:name => "img", :attributes => {
+    img = Element.new_with_options(:name => "img", :attributes => {
         'class' => 'favicon',
         'src' => "/img/icons/favicons/#{path}",
         'width' => 16,
         'height' => 16, 
         'alt' => name
     })
-    a = Element.newer(:name => "a", :attributes => {
+    a = Element.new_with_options(:name => "a", :attributes => {
       'href' => "http://#{name}"
     })
     a.add_element(img)
