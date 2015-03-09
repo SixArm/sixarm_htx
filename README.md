@@ -1,7 +1,8 @@
-# SixArm.com » HTX » HTML pre-processor for formatting our site's web pages.
+# HTX » HTML extensions using a pre-processor
 
-HTX is an ad-hoc tool somewhat like Markdown, Textile, or XSLT.
+HTX translates text input files to HTML output files.
 
-HTX is a work in progress and is not intended yet for public use;
-it is based on our older HTX perl code from 1994-1998.
+HTX is a work in progress. 
+
+HTX is implemented in Ruby now, and is based on our older HTX perl code from 1994-1998.
 
