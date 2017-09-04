@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+__END__
+
 =begin rdoc
 =end
 

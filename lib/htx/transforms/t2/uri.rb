@@ -1,18 +1,22 @@
 # -*- coding: utf-8 -*-
-module HTX
+=begin
 
-  # Tranform `<uri>` to an anchor link.
-  #
-  # Example input:
-  #
-  #     <uri>http://example.com</uri>
-  #
-  # Example output:
-  #
-  #     <a href="http://example.com">http://example.com</uri>
-  #
-  def htx_t2_uri(s)
-    return to_href_link(s)
+Tranform `<uri>` to an anchor link.
+
+Example inputs:
+
+    <uri>http://example.com</uri>
+
+Example output:
+
+   <a href="http://example.com">http://example.com</uri>
+
+=end
+
+class URI < HTX::Transforms
+
+  def tr(s)
+    "<a href=\"#{s}\">#{s}</a>"
   end
 
 end

@@ -1,31 +1,39 @@
 # -*- coding: utf-8 -*-
-module HTX
+=begin
 
-  # Transform that sets global variables, one per line.
-  #
-  # Example input:
-  #
-  #     <set>
-  #     foo: Hello
-  #     goo: World
-  #     </set>
-  #
-  # Example output:
-  #
-  #    (blank)
-  #
-  # Example runtime:
-  #
-  #     $var["foo"] = "Hello"
-  #     $var["goo"] = "World"
-  #
-  def htx_t2_set(text)
-    text.striplines.each{|line|
+Transform to set global variables, one per line.
+
+Example input:
+
+    <set>
+    foo: Hello
+    goo: World
+    </set>
+
+Example output:
+
+   (blank)
+
+Example runtime:
+
+    $var["foo"] = "Hello"
+    $var["goo"] = "World"
+
+=end
+
+class Set < HTX::Transforms
+
+  def tr(s)
+    s.striplines.each{|line|
       if line=~/^(\w+): /
-        @var[$1]||=$'
+        set($1,$')
       end
     }
-    return ''
+    ''
+  end
+
+  def set(k, v)
+    @var[$1]||=$'
   end
 
 end

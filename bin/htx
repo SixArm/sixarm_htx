@@ -142,7 +142,7 @@ class HTX
   #
   # We use a file naming convention for transforms:
   #
-  #  * t0: transform that uses no tag, e.g. transfor "(C)" to "&copy".
+  #  * t0: transform that uses no tag, e.g. transform "(C)" to "&copy".
   #  * t1: transform that uses one tag, e.g. "<foo/>".
   #  * t2: transform that uses two tags, e.g. "<foo>...</foo>".
   #
@@ -254,7 +254,7 @@ class HTX
       send_tag_text("tag1_"+tag,attr)
     }
 
-    while result = s.gsub!(/\<(article|citelink|cmd|ed|javascript|lis|list|listy|man|mysql|ruby|sh|sh0|sh1|sh2|talk|skills|see|set|toclist|uri|wikipedia|wikipedias|x)>(.*?)<\/\1>/m){
+   while result = s.gsub!(/\<(article|citelink|cmd|ed|javascript|lis|list|listy|man|mysql|ruby|sh|sh0|sh1|sh2|talk|skills|see|set|toclist|uri|wikipedia|wikipedias|x)>(.*?)<\/\1>/m){
         tag=$1
         text=$2
         send_tag_text("tag2_"+tag,text)
